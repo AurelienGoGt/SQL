@@ -228,4 +228,96 @@ exemple : 5.8500000000000000
 
 ```
 
+<hr> <h2 align="center">🏁 Mission 4 : </h2> 
+
+<h3>🎯 Détail de la mission : </h3> 
+
+<h4 align="center">Objectif : </h4>
+
+<p align="center"> 
+  <img src="https://datalemur.com/sql-game/images/Tug_of_War.jpeg" 
+    alt="Illustration Squid Game SQL trouve sur le site du jeu" width="420"> 
+</p> 
+
+>  *«Travail impressionnant sur l’analyse du jeu Honeycomb !
+Vous prouvez être un véritable maître du SQL. Trois défis déjà, et pas la moindre hésitation morale en vue. J’adore quand nos employés comprennent notre… culture d’entreprise si particulière. C’est presque comme une famille, vous savez ?
+> Maintenant, passons aux choses sérieuses concernant la dynamique d’équipe. Le jeu du Tir à la corde approche, et le Front Man a une requête spéciale avant que la partie ne commence.
+> Entre nous, il s’intéresse particulièrement aux… avantages démographiques de certaines équipes. L’âge apporte la sagesse, certes, mais la jeunesse a aussi ses atouts, n’est-ce pas ?»*
+
+<strong>Le Front Man</strong> doit analyser et classer les équipes avant le début du jeu du <strong>Tir à la Corde</strong>.
+
+Pour chaque équipe comptant exactement <strong>10 joueurs</strong>, il faut calculer l’<strong>âge moyen</strong> des joueurs.
+
+Ensuite, les équipes doivent être catégorisées en <strong>trois groupes d’âge</strong> selon leur <strong>âge moyen</strong> :
+
+- <strong>En forme</strong> — âge moyen &lt; 40
+- <strong>Expérimentée</strong> — âge moyen ≥ 40 et ≤ 50
+- <strong>Âgée</strong> — âge moyen &gt; 50
+
+---
+
+</p> <h3>🗂️ Table SQL : </h3>
+
+<p align="center"> 
+  <span style="display:inline-block; margin-right:20px;"> 
+    <img src="https://datalemur.com/sql-game/images/schemas/level4.jpg" 
+      alt="Schéma de la table SQL Mission 4" width="420"> </span> 
+</p> 
+
+<h3>💡 Solution SQL : </h3>
+
+```sql
+
+-- Étape 1 : Choix des features, Utilisation de feature engineering pour creer les categories "En forme","Experiemente" et "Agee"
+
+SELECT 
+    team_id, 
+    FLOOR(AVG(age)) AS age_moyen,                              -- On arrondit à l'année inférieure pour éviter les décimales inutiles
+    CASE                                                       -- Structure conditionnelle : équivalent du IF / THEN / ELSE
+    WHEN AVG(age) < 40 THEN 'En forme'                         -- Moins de 40 ans = équipe jeune et dynamique
+    WHEN AVG(age) > 40 AND AVG(age) <= 50 THEN 'Expérimentée'  -- Entre 40 et 50 ans = équipe intermédiaire
+    ELSE 'Âgée'                                                -- Au-delà de 50 ans = équipe plus âgée
+    END AS groupe_age,                                         -- Creation de la colonne groupe_age via les differents filtres
+    RANK() OVER (ORDER BY AVG(age) DESC) AS classement_age     -- Classement selon l’âge moyen, du plus vieux au plus jeune
+FROM player
+
+-- Étape 2 : Choix des personnes vivantes et ayant un numero d'equipe (team_id)
+
+WHERE status = 'alive'                                         -- On ne prend en compte que les joueurs encore "vivants"
+  AND team_id IS NOT NULL                                      -- On exclut les joueurs sans équipe
+
+-- Étape 3 : On agrege pour une facilite d'analyse et on evite les joueurs avec une equipe partielle ou sans equipe.
+
+GROUP BY team_id                                               -- On agrège par équipe
+HAVING COUNT(*) = 10                                           -- On ne garde que les équipes complètes (10 joueurs)
+ORDER BY classement_age;                                       -- Classement final par âge moyen décroissant
+
+
+/****************************************************************
+
+Resultat :
+
+-- Résultats du classement des équipes selon l'âge moyen
+
+team_id | age_moyen  | age_groupe | ranking_age
+--------+------------+------------+-------------
+27      | 63         | Elderly    | 1
+20      | 63         | Elderly    | 2
+7       | 61         | Elderly    | 3
+15      | 59         | Elderly    | 4
+35      | 59         | Elderly    | 5
+
+Showing 5 of 36 rows
+
+INTERPRÉTATION :
+Ici j'ai decide de reduire le nombre de visuel possible pour que ce soit plus simple a interpreter. Ce n'etait pas demande mais j'ai ajoute une fonction FLOOR pour que l'age moyen soit plus lisible, potentiellement ajoute un roound(),2) pourrait etre interessant aussi ici.
+La fonction Having a du etre utiliser a cause de la condition d'avoir une equipe avec exactement 10 personnes egalement.
+Mon resultat differe legerement avec le site a cause de mes differents  filtrages qui ont ete arrondis.    
+
+****************************************************************\
+
+``` 
+
+
+
 SUITE IN PROGRESS
