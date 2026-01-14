@@ -27,16 +27,25 @@ Sous les néons de Los Angeles dans les années 1980, le magasin West Hollywood 
 
 ```sql
 
+SELECT * 
+FROM crime_scene
+WHERE date = '19830715'
+  AND location = 'West Hollywood Records'
+  AND type = 'theft';
 
-Description de la requete
+Pour cette premiere requete, on va devoir rechercher la date au format YYYYMMDD, avec ca on a directement le resultat.
+Si on veut aller plus loin on peut ajouter location = West Hollywood Records et type = theft
 
 Resultat :
 
 /*****************************************************************************************************
 
-Visualisation de la requete
+| id | date     | type  | location               | description                          |
+|----|----------|-------|------------------------|--------------------------------------|
+| 65 | 19830715 | theft | West Hollywood Records | A prized vinyl record was stolen     |
+|    |          |       |                        | from the store during a busy evening.|
 
- INTERPRÉTATION du resultat
-
+Ici, on peut voir qu'on a une ID (65) pour le cas,
+il va falloir rechercher dans les autrestables pour avoir des suspects 
 *****************************************************************************************************\
 ```
