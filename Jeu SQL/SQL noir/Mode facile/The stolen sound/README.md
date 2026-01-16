@@ -149,6 +149,12 @@ Ici, on peut voir que le coupable est la personne avec l'ID 97 qui corresponds a
 Case Solved!
 Excellent work, detective! Rico Delgado has confessed to stealing the prized vinyl record.
 
-Explanation
-You began by querying the 'crime_scene' table with the date (19830715) and location (West Hollywood Records) to find the incident report. Then, you retrieved the two witness records from the 'witnesses' table, which revealed that: • The suspect wore a red bandana. • The suspect had a distinctive gold watch. Next, you queried the 'suspects' table, and there were 3 suspects matching the clues. Finally, you found the confession from Rico Delgado in the 'interviews' table.
+Explanation :
+You began by querying the 'crime_scene' table with the date (19830715) and location 
+(West Hollywood Records) to find the incident report. 
+Then, you retrieved the two witness records from the 'witnesses' table, which revealed that: 
+  • The suspect wore a red bandana. 
+  • The suspect had a distinctive gold watch. Next, you queried the 'suspects' table, 
+  and there were 3 suspects matching the clues. Finally, 
+  you found the confession from Rico Delgado in the 'interviews' table.
 ```
