@@ -49,3 +49,106 @@ Ici, on peut voir qu'on a une ID (65) pour le cas,
 il va falloir rechercher dans les autrestables pour avoir des suspects 
 *****************************************************************************************************\
 ```
+
+<h2 align="center"> Étape 2 : Consulter les témoignages des témoins liés à cette scène de crime afin d’obtenir leurs indices. : </h2>
+
+```sql
+
+SELECT *
+FROM witnesses
+WHERE crime_scene_id = 65;
+
+Pour cette deuxieme requete, on recherche les temoins de la scene de crime avec
+cette requete cela nous permet d'avoir plusieurs suspects
+
+Resultat :
+
+/*****************************************************************************************************
+
++----+-----------------+------------------------------------------------------------+
+| ID | Crime Scene ID  | Clue                                                       |
++----+-----------------+------------------------------------------------------------+
+| 28 | 65              | I saw a man wearing a red bandana rushing out of the store |
+| 75 | 65              | The main thing I remember is that he had a distinctive     |
+|    |                 | gold watch on his wrist                                    |
++----+-----------------+------------------------------------------------------------+
+
+
+
+Ici, on peut voir qu'on a une ID (65) pour le cas,
+il va falloir rechercher dans les autrestables pour avoir des suspects 
+*****************************************************************************************************\
+
+```
+
+<h2 align="center"> Étape 3 : Utiliser les indices fournis par les témoins pour identifier le suspect dans la table des suspects. : </h2>
+
+```sql
+
+SELECT *
+FROM suspects
+WHERE bandana_color = 'red'
+   AND accessory = 'gold watch';
+
+
+Pour cette troisieme requete, on liste toute les personnes ayant un bandana rouge et une montre en or
+
+Resultat :
+
+/*****************************************************************************************************
+
+
++----+----------------+------------------+-----------------+
+| ID | Name           | Bandana Color    | Accessory       |
++----+----------------+------------------+-----------------+
+| 35 | Tony Ramirez   | red              | gold watch      |
+| 44 | Mickey Rivera  | red              | gold watch      |
+| 97 | Rico Delgado   | red              | gold watch      |
++----+----------------+------------------+-----------------+
+
+
+Ici, on peut voir qu'on a 3 suspects, il va donc falloir rechercher leur alibis pour trouver le coupable
+*****************************************************************************************************\
+
+```
+
+<h2 align="center"> Étape 4 : Récupérer la transcription de l’interrogatoire du suspect afin de confirmer les aveux. : </h2>
+
+```sql
+
+SELECT *
+FROM interviews
+WHERE suspect_id IN (35, 44, 97);
+
+
+Pour cette derniere requete, on va checker les interviews de chaque suspect.
+
+Resultat :
+
+/*****************************************************************************************************
+
+
++------------+------------------------------------------------------------+
+| suspect_id | transcript                                                 |
++------------+------------------------------------------------------------+
+| 35         | I wasn't anywhere near West Hollywood Records that night.  |
+| 44         | I was busy with my music career; 
+|            | I have nothing to do with this theft.                      |
+| 97         | I couldn't help it. I snapped and took the record.         |
++------------+------------------------------------------------------------+
+
+
+
+Ici, on peut voir que le coupable est la personne avec l'ID 97 qui corresponds a Rico Delgado 
+*****************************************************************************************************\
+
+```
+<h2 align="center"> Étape 5 : Valider le cas : </h2>
+
+```
+Case Solved!
+Excellent work, detective! Rico Delgado has confessed to stealing the prized vinyl record.
+
+Explanation
+You began by querying the 'crime_scene' table with the date (19830715) and location (West Hollywood Records) to find the incident report. Then, you retrieved the two witness records from the 'witnesses' table, which revealed that: • The suspect wore a red bandana. • The suspect had a distinctive gold watch. Next, you queried the 'suspects' table, and there were 3 suspects matching the clues. Finally, you found the confession from Rico Delgado in the 'interviews' table.
+```
