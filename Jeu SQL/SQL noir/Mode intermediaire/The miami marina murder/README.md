@@ -91,7 +91,7 @@ Ici, on a pu detecter 2 suspects, maintenant il va falloir faire en sorte de tro
 
 ```
 
-<h2 align="center"> Étape 3 : Rechercher l'alibi des 2 coupables : </h2>
+<h2 align="center"> Étape 3 : Rechercher l'alibi des 2 suspects : </h2>
 
 ```sql
 
@@ -117,5 +117,111 @@ Resultat :
 
 Ici, on a pu avoir d'autres informations a verifie pour le futur coupable un hotel le 13 Aout
 et l'hotel Sunset
+
+```
+<h2 align="center"> Étape 4 : Rechercher des potentiels coupables : </h2>
+
+```sql
+
+SELECT hc.hotel_name, p.id, p.name, p.occupation, p.address
+FROM hotel_checkins hc
+JOIN person p ON p.id = hc.person_id
+WHERE hc.check_in_date = 19860813
+  AND hc.hotel_name LIKE '%Sunset%'
+  AND hc.hotel_name LIKE '%Hotel%'
+  AND (
+        p.address LIKE '%Marina%'
+     OR p.address LIKE '%Coral%'
+     OR p.address LIKE '%Bay%'
+     OR p.address LIKE '%Ocean Drive%'
+  )
+ORDER BY p.name;
+
+Pour cette quatrieme requete on doit chercher les personnes qui etait dans un hotel avec Sunset dans le nom le  13/08/1986
+
+Resultat :
+
+/*****************************************************************************************************
+
++---------------------+----+------------------+-------------------+------------------+
+| hotel_name          | id | name             | occupation        | address          |
++---------------------+----+------------------+-------------------+------------------+
+| Sunset Beach Hotel  |  9 | David Clark      | Warehouse Manager | 567 Bay Drive    |
+| Sunset Lagoon Hotel | 47 | Lawrence Powell  | Zoo Keeper        | 123 Coral Drive  |
+| Sunset Coast Hotel  | 14 | Richard Moore    | Restaurant Owner  | 321 Coral Way    |
++---------------------+----+------------------+-------------------+------------------+
+
+*****************************************************************************************************\
+
+Ici, on a pu trouve 3 suspects, il va falloir voir ce que faisait les 3 suspects le jour du meurtre
+
+```
+
+<h2 align="center"> Étape 5 : Ecouter les confessions des differents suspects : </h2>
+
+```sql
+
+SELECT *
+FROM confessions
+WHERE person_id IN (9, 47, 14);
+
+Pour cette cinquieme requete on ecoute les differentes confessions des 3 suspects
+
+Resultat :
+
+/*****************************************************************************************************
+
++----+-----------+--------------------------------------------------+
+| id | person_id | confession                                       |
++----+-----------+--------------------------------------------------+
+|  3 |         9 | Who are you to question me? I'm an innocent man. |
+|  8 |        14 | I was home with my family that night.            |
+| 41 |        47 | I demand to speak to my lawyer.                  |
++----+-----------+--------------------------------------------------+
+
+
+*****************************************************************************************************\
+
+Ici, on a pu avoir les 3 confession avec le numero 47 Lawrence Powell qui est relativement etrange.
+On va donc prendre plus d'info a son sujet
+
+
+
+```
+
+IN PROGRESS UNE ERREUR DANS LES REQUETES
+
+<h2 align="center"> Étape Bonus : Trouver le coupable version facile : </h2>
+
+```sql
+
+SELECT
+  c.id,
+  c.person_id,
+  p.name,
+  c.confession
+FROM confessions c
+JOIN person p ON p.id = c.person_id
+WHERE c.confession LIKE '%marina%'
+   OR c.confession LIKE '%Coral%'
+   OR c.confession LIKE '%Bay%';
+
+
+Pour cette requete bonus en tapant le lieu du crime dans les confessions on est capable de trouver directement le coupable.
+
+Resultat :
+
+/*****************************************************************************************************
+
++----+-----------+--------------+--------------------------------------------------------------------------+
+| id | person_id | name         | confession                                                               |
++----+-----------+--------------+--------------------------------------------------------------------------+
+| 73 |         8 | Thomas Brown | Alright! I did it. I was paid to make sure he never left the marina alive. |
++----+-----------+--------------+--------------------------------------------------------------------------+
+
+*****************************************************************************************************\
+
+Ici, on a pu avoir les 3 confession avec le numero 47 Lawrence Powell qui est relativement etrange.
+On va donc prendre plus d'info a son sujet
 
 ```
