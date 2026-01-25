@@ -8,7 +8,7 @@
 
 SELECT DISTINCT director
 FROM Movies
-ORDER BY Director ASC --- ASC is optional as default is ascending
+ORDER BY Director ASC ; --- ASC is optional as default is ascending
 
 ------------------------------------------------------
 
@@ -18,7 +18,7 @@ ORDER BY Director ASC --- ASC is optional as default is ascending
 SELECT title, year  --- you can use * to get all columns if you want too
 FROM Movies
 ORDER BY year DESC
-LIMIT 4
+LIMIT 4 ;
 
 ------------------------------------------------------
 
@@ -28,16 +28,16 @@ LIMIT 4
 SELECT title
 FROM Movies
 ORDER BY title
-LIMIT 5
+LIMIT 5 ;
 
 ------------------------------------------------------
 
 -- Task 4 : List the next five Pixar movies sorted alphabetically
 -- Grain: Only 5 rows of Pixar movies ordered by year ascending
 
-SELECT title, year
+SELECT title
 FROM Movies
-ORDER BY Year ASC
-LIMIT 5 ;
+ORDER BY title ASC
+LIMIT 5 OFFSET 5 ;
 
 ------------------------------------------------------
