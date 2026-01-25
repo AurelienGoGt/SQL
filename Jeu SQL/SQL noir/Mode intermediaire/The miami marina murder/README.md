@@ -306,5 +306,3 @@ Resultat :
 
 Thomas Brown fournit un aveu explicite et cohérent avec le lieu du crime.
 L’aveu mentionne un paiement, mais l’objectif de ce cas étant l’identification du meurtrier, l’enquête s’arrête ici.
-
-```
