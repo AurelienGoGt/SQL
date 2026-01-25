@@ -28,15 +28,14 @@ SELECT id, date, location, description
 FROM crime_scene
 WHERE date = 19860814
   AND location = 'Coral Bay Marina';
-
+```
 
 Pour cette premiere requete, on va devoir rechercher la date au format YYYYMMDD, et location = Coral Bay Marin.
 Avec ca on a directement les temoins de la scene de crime.
 
 Resultat :
 
-/*****************************************************************************************************
-
+```
 +----+----------+-------------------+----------------------------------------------------------------------------+
 | id | date     | location          | description                                                                |
 +----+----------+-------------------+----------------------------------------------------------------------------+
@@ -45,12 +44,11 @@ Resultat :
 |    |          |                   | - one who lives on 300ish "Ocean Drive"                                    |
 |    |          |                   | - another whose first name ends with "ul" and last name ends with "ez".    |
 +----+----------+-------------------+----------------------------------------------------------------------------+
-
-*****************************************************************************************************\
+```
 
 Dans ce tableau, on a l'indication de 2 temoins, qui pourrait nous apporter plus d'information.
 
-```
+
 
 <h2 align="center"> Étape 2 : Retrouver les 2 temoins : </h2>
 
@@ -60,27 +58,24 @@ SELECT *
 FROM person
 WHERE (address LIKE '%Ocean Drive%' AND CAST(SUBSTR(address,1,INSTR(address,' ')-1) AS INTEGER) BETWEEN 300 AND 399)
    OR (name LIKE '%ul %ez');
-
+```
 
 Pour cette deuxieme requete on doit identifier les témoins mentionnés dans la description
 
 Resultat :
 
-/*****************************************************************************************************
-
+```
 +-----+-----------------+-----------+------------------+------------------+--------------------------+
 | id  | name            | alias     | occupation       | address          | witness_type             |
 +-----+-----------------+-----------+------------------+------------------+--------------------------+
 | 102 | Raul Gutierrez  | The Cobra | Nightclub Owner  | 45 Sunset Ave    | Name pattern (*ul *ez)   |
 | 101 | Carlos Mendez   | Los Ojos  | Fisherman        | 369 Ocean Drive  | Ocean Drive (300ish)     |
 +-----+-----------------+-----------+------------------+------------------+--------------------------+
-
-*****************************************************************************************************\
+```
 
 Dans ce tableau, on a recherche les personnes qui ont (*ul *ez) ou qui ont (300ish).
 On va devoir trouver des indices grace a leur temoignage.
 
-```
 
 <h2 align="center"> Étape 3 : Trouver des indices avec les 2 temoins : </h2>
 
@@ -90,13 +85,13 @@ SELECT i.id, i.person_id, p.name, i.transcript
 FROM interviews i
 JOIN person p ON p.id = i.person_id
 WHERE i.person_id IN (101,102);
-
+```
 
 Pour cette troisieme requete on doit ecouter les 2 temoins pour trouver des indices
 
 Resultat :
 
-/*****************************************************************************************************
+```
 
 +-----+-----------------+--------------------------------------------------------------------------+
 | id  | person_id       | transcript                                                               |
@@ -105,12 +100,12 @@ Resultat :
 | 102 | 102             |  I heard someone checked into a hotel with "Sunset" in the name.         |
 +-----+-----------------+--------------------------------------------------------------------------+
 
-*****************************************************************************************************\
+```
 
 Ce tableau represente les 2 temoins Carlos Mendez et Raul Gutierrez qui nous donnent une indication
 sur le potentiel coupable dans un hotel "Sunset" le 13 Aout.
 
-```
+
 <h2 align="center"> Étape 4 : Rechercher des potentiels suspects : </h2>
 
 ```sql
@@ -126,14 +121,14 @@ FROM hotel_checkins hc
 JOIN person p ON p.id = hc.person_id
 WHERE hc.check_in_date = 19860813
   AND hc.hotel_name LIKE '%Sunset%';
-
+```
 
 Pour cette quatrieme requete on doit chercher les personnes qui etait dans un hotel avec Sunset dans le nom le  13/08/1986.
 Cela permettra d'avoir la liste de tout les potentielles coupables, on reduira par la suite.
 
 Resultat :
 
-/*****************************************************************************************************
+```
 
 | person_id | name              | occupation              | address             | hotel_name             | check_in_date |
 | --------- + ----------------- + ----------------------- + ------------------- + ---------------------- + ------------- |
@@ -189,11 +184,10 @@ Resultat :
 | 54        | Roy Jenkins       | Park Ranger             | 567 Dock Street     | Sunset Crest Resort    | 19860813      |
 | --------- + ----------------- + ----------------------- + ------------------- + ---------------------- + ------------- |
 
-*****************************************************************************************************\
+```
 
 Ce tableau représente l’ensemble complet des individus candidats, établi uniquement à partir de contraintes objectives (date et nom de l’hôtel). 
 
-```
 
 <h2 align="center"> Étape 5 : Ecouter les confessions des differents suspects : </h2>
 
@@ -211,13 +205,13 @@ WHERE c.person_id IN (
     WHERE check_in_date = 19860813
       AND hotel_name LIKE '%Sunset%'
 );
-
+```
 
 Pour cette cinquieme requete on ecoute les differentes confessions de la liste de suspects
 
 Resultat :
 
-/*****************************************************************************************************
+```
 
 | person_id | name              | confession                                                                     |
 | --------- + ----------------- + ------------------------------------------------------------------------------ |
@@ -273,16 +267,13 @@ Resultat :
 | 8         | Thomas Brown      | **Alright! I did it. I was paid to make sure he never left the marina alive.** |
 | --------- + ----------------- + ------------------------------------------------------------------------------ |
 
-
-*****************************************************************************************************\
+```
 
 Dans ce tableau, on voit que Thomas Brown avoue le crime. Il explique egalement le lieu du crime.
 Malheusement il explique qu'il a ete paye, mais ici on ne nous donne pas plus d'informations.
 
 
-```
-
-<h2 align="center"> Étape Bonus : Trouver le coupable version facile : </h2>
+<h2 align="center"> Étape Bonus : Trouver le coupable via la table confession uniquement : </h2>
 
 ```sql
 
@@ -296,13 +287,14 @@ JOIN person p ON p.id = c.person_id
 WHERE c.confession LIKE '%marina%'
    OR c.confession LIKE '%Coral%'
    OR c.confession LIKE '%Bay%';
-
+```
 
 Pour cette requete bonus en tapant le lieu du crime dans les confessions on est capable de trouver directement le coupable.
+Ce n'est pas la bonne methodologie ici, car on osculte le reste.
 
 Resultat :
 
-/*****************************************************************************************************
+```
 
 +----+-----------+--------------+----------------------------------------------------------------------------+
 | id | person_id | name         | confession                                                                 |
@@ -310,7 +302,7 @@ Resultat :
 | 73 |         8 | Thomas Brown | Alright! I did it. I was paid to make sure he never left the marina alive. |
 +----+-----------+--------------+----------------------------------------------------------------------------+
 
-*****************************************************************************************************\
+```
 
 Thomas Brown fournit un aveu explicite et cohérent avec le lieu du crime.
 L’aveu mentionne un paiement, mais l’objectif de ce cas étant l’identification du meurtrier, l’enquête s’arrête ici.
