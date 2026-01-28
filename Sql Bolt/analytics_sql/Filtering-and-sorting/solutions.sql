@@ -1,5 +1,5 @@
 -- ======================================================
--- SQLBolt – Select Queries
+-- SQLBolt – Filtering and sorting
 -- Dataset: SQLBolt platform (conceptual)
 -- ======================================================
 

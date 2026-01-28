@@ -1,5 +1,5 @@
 -- ======================================================
--- SQLBolt – Select Queries
+-- SQLBolt – Joins
 -- Dataset: SQLBolt platform (conceptual)
 -- ======================================================
 
